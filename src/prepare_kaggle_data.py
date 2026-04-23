@@ -130,10 +130,21 @@ def main() -> None:
         default="data/ipl_matches.csv",
         help="Output path for normalized training CSV.",
     )
+    parser.add_argument(
+        "--cache-out",
+        default="data/cache/ipl_matches.csv.gz",
+        help="Output path for compressed cached dataset.",
+    )
+    parser.add_argument(
+        "--cleanup-raw",
+        action="store_true",
+        help="Delete the source raw CSV after successful preprocessing.",
+    )
     args = parser.parse_args()
 
     raw_dir = Path(args.raw_dir)
     out_path = Path(args.out)
+    cache_path = Path(args.cache_out)
 
     if not raw_dir.exists():
         raise FileNotFoundError(f"Raw data directory not found: {raw_dir}")
@@ -150,9 +161,16 @@ def main() -> None:
         normalized_df = normalized_df.dropna(subset=REQUIRED_OUTPUT_COLUMNS)
 
     out_path.parent.mkdir(parents=True, exist_ok=True)
+    cache_path.parent.mkdir(parents=True, exist_ok=True)
     normalized_df.to_csv(out_path, index=False)
+    normalized_df.to_csv(cache_path, index=False, compression="gzip")
     print(f"Prepared data saved to: {out_path}")
+    print(f"Compressed cache saved to: {cache_path}")
     print(f"Rows: {len(normalized_df)}")
+
+    if args.cleanup_raw:
+        input_csv.unlink(missing_ok=True)
+        print(f"Deleted raw source file: {input_csv}")
 
 
 if __name__ == "__main__":

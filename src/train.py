@@ -59,7 +59,11 @@ def build_pipeline() -> Pipeline:
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Train IPL winner prediction model.")
-    parser.add_argument("--data", required=True, help="Path to input CSV dataset.")
+    parser.add_argument(
+        "--data",
+        default="data/ipl_matches.csv",
+        help="Path to input dataset (.csv or .csv.gz).",
+    )
     parser.add_argument(
         "--model-out",
         default="models/ipl_winner_model.joblib",

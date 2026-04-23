@@ -50,6 +50,14 @@ kaggle datasets download -d chaitu20/ipl-dataset2008-2025 -p data/raw --unzip
 python src/prepare_kaggle_data.py --raw-dir data/raw --out data/ipl_matches.csv
 ```
 
+This also creates a compressed cache at `data/cache/ipl_matches.csv.gz`.
+
+If you want to reclaim disk space after preprocessing:
+
+```bash
+python src/prepare_kaggle_data.py --raw-dir data/raw --out data/ipl_matches.csv --cleanup-raw
+```
+
 ## Expected training format
 
 Training script reads:
@@ -69,6 +77,12 @@ Required columns:
 
 ```bash
 python src/train.py --data data/ipl_matches.csv --model-out models/ipl_winner_model.joblib
+```
+
+You can also train directly from compressed cache:
+
+```bash
+python src/train.py --data data/cache/ipl_matches.csv.gz --model-out models/ipl_winner_model.joblib
 ```
 
 ## Make a prediction
